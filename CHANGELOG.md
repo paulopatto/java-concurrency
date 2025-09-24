@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Your new feature here.
+- Project governance and contribution files: `LICENSE`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`, and `CONTRIBUTING.md`.
+- Code formatting and consistency files: `.editorconfig` and `.prettierrc.json`.
+
+### Fixed
+- Restored the missing `tecnologia-e-inovacao.md` resource file to the `core` module, fixing the `diskOp` benchmark task.
 
 ## [1.0.0] - 2025-09-23
 
@@ -22,4 +26,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `rxjava` module for RxJava implementation.
 - `coroutines` module for Kotlin Coroutines implementation.
 - Detailed `README.md` files for the root project and each individual module.
-- Project documentation: `LICENSE`, `CODE_OF_CONDUCT.md`, and `CONTRIBUTING.md`.
