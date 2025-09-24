@@ -8,6 +8,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 repositories {
@@ -27,6 +28,10 @@ dependencies {
     // Dependência para programação reativa com RxJava
     implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
     implementation 'at.favre.lib:bcrypt:0.10.2'
+
+    // Dependencias para Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -86,4 +91,20 @@ task runStructuredConcurrency(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'virtual.threads.StructuredConcurrency'
     jvmArgs += ['--enable-preview', '--add-modules', 'jdk.incubator.concurrent']
+}
+// Tarefa para executar o exemplo com Coroutines do Kotlin
+task runKotlinCoroutines(type: JavaExec) {
+    group = "Execution"
+    description = "Runs the Kotlin Coroutines example"
+    classpath = sourceSets.main.runtimeClasspath
+
+    // O compilador Kotlin gera uma classe com o sufixo 'Kt' para arquivos com funções de nível superior
+    // o compilador Kotlin gera uma classe Java chamada KotlinCoroutineExampleKt para conter essas funções como métodos estáticos.
+    // É por isso que apontei a tarefa para essa classe com o sufixo 'Kt' e não apenas 'KotlinCoroutineExample'.
+    // Tive ajuda do Gemini AI para descobrir isso.
+    // Essa classe aqui só tem o método main.
+    // O compilador Kotlin cria duas classes diferentes a partir do seu arquivo KotlinCoroutineExample.kt porque ele tem duas coisas diferentes:
+    //  1. Uma função `main` no topo do arquivo: Para conter essa função, o Kotlin cria a classe KotlinCoroutineExampleKt.class. Ela tem apenas um método estático: main().
+    //  2. Um `object KotlinCoroutineExample`: Para representar o objeto singleton, o Kotlin cria a classe KotlinCoroutineExample.class. É nesta classe que está o método estático run() que você quer chamar a partir do benchmark.
+    mainClass = 'virtual.threads.KotlinCoroutineExampleKt' 
 }

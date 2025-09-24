@@ -14,6 +14,8 @@ import java.util.stream.IntStream;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
+import virtual.threads.KotlinCoroutineExample;
+
 public class App {
 
     private static final int TASKS = 1_000;
@@ -27,6 +29,7 @@ public class App {
         runWithStructuredConcurrency();
         runWithCompletableFuture();
         runWithRxJava();
+        runWithKotlinCoroutines();
 
         System.out.println("==================================================================");
         System.out.println("Benchmark finalizado.");
@@ -83,5 +86,11 @@ public class App {
     private static void printDuration(String name, Instant start) {
         long millis = Duration.between(start, Instant.now()).toMillis();
         System.out.printf("%-40s: %d ms%n", name, millis);
+    }
+
+    private static void runWithKotlinCoroutines() {
+        Instant start = Instant.now();
+        KotlinCoroutineExample.run();
+        printDuration("5. Kotlin Coroutines", start);
     }
 }
