@@ -1,0 +1,18 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':modules:core')
+}
+
+application {
+    mainClass = 'virtual.threads.structured.StructuredConcurrency'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['--enable-preview', '--add-modules', 'jdk.incubator.concurrent']
+}
+tasks.withType(JavaExec) {
+    jvmArgs += ['--enable-preview', '--add-modules', 'jdk.incubator.concurrent']
+}
