@@ -1,80 +1,72 @@
-# Laboratório de Coroutines com Java 19+ (Virtual Threads)
+# Laboratório de Concorrência com Java, Kotlin e Virtual Threads
 
-Este projeto é um laboratório para explorar e comparar padrões de concorrência em Java, com foco principal nas **Virtual Threads** (Project Loom).
+Este projeto é um laboratório para explorar e comparar diferentes modelos de concorrência na JVM, com foco em Virtual Threads (Project Loom), Structured Concurrency, CompletableFuture, RxJava e Coroutines do Kotlin.
 
-## O que são Virtual Threads?
-
-Virtual Threads são a resposta do Java para coroutines. São tarefas leves que rodam no topo das threads de plataforma do SO. Diferente das threads tradicionais, que são um recurso pesado, milhões de virtual threads podem ser criadas. Elas são ideais para tarefas bloqueadas por **I/O**, pois liberam a thread da plataforma enquanto esperam, permitindo uma escalabilidade massiva.
+O projeto é estruturado como um **build multi-módulo** com Gradle, onde cada modelo de concorrência é um submódulo independente.
 
 ## Estrutura do Projeto
 
-O código-fonte contém vários exemplos e um benchmark em `app/src/main/java/virtual/threads/`:
+O projeto é dividido nos seguintes módulos, localizados no diretório `modules/`:
 
-- `App.java`: **Benchmark principal.** Executa uma tarefa CPU-intensiva usando quatro modelos de concorrência diferentes e compara seus tempos de execução.
-- `ProjectLoomExample.java`: Exemplo original de I/O simulado com `Executors.newVirtualThreadPerTaskExecutor()`.
-- `StructuredConcurrency.java`: Demonstra o uso de `StructuredTaskScope` para gerenciar o ciclo de vida de tarefas concorrentes.
-- `AsyncCoroutine.java`: Exemplo de programação assíncrona com `CompletableFuture`.
-- `RxJavaExample.java`: Exemplo de programação reativa com RxJava.
+-   `core`: Uma biblioteca Java que contém a lógica de benchmark compartilhada (`BenchmarkTasks`).
+-   `loom`: Aplicação Java demonstrando Virtual Threads.
+-   `structured`: Aplicação Java demonstrando Structured Concurrency.
+-   `completablefuture`: Aplicação Java com `CompletableFuture` e pools de threads de plataforma.
+-   `rxjava`: Aplicação Java com programação reativa usando RxJava.
+-   `coroutines`: Aplicação Kotlin demonstrando Coroutines.
+-   `runner`: A aplicação principal que depende de todos os outros módulos para executar um benchmark comparativo completo.
 
 ## O Benchmark
 
-O benchmark (`./gradlew run`) executa 1000 tarefas **CPU-intensivas** (hashing com BCrypt) em paralelo.
-
-**Nota Importante:** Virtual Threads foram projetadas para otimizar tarefas **I/O-bound** (espera por rede, disco, etc.). Para tarefas puramente **CPU-bound** como este benchmark, as threads de plataforma (`CompletableFuture` com um pool fixo ou `RxJava` com `Schedulers.computation()`) podem apresentar desempenho similar ou até superior. O objetivo aqui é comparar a sintaxe e o comportamento das diferentes APIs sob carga.
+O benchmark executa uma carga de trabalho mista para simular uma aplicação real:
+-   **20% de tarefas CPU-intensivas** (hashing com BCrypt).
+-   **40% de tarefas de I/O de rede** (chamadas a uma API REST).
+-   **40% de tarefas de I/O de disco/memória** (leitura e tokenização de um arquivo de texto).
 
 ## Como Usar o Projeto
 
 ### Pré-requisitos
 - JDK 19 ou superior.
 
-### Compilar o Projeto (Build)
+### Compilar Todos os Módulos (Build)
+Para compilar todo o projeto, execute o comando a partir do diretório raiz:
 ```bash
 ./gradlew build
 ```
 
-### Executar o Benchmark Principal
-Para rodar o benchmark comparativo, execute:
+### Executar o Benchmark Completo
+Para rodar o benchmark principal que executa e compara todos os modelos de concorrência, use a tarefa `run` do módulo `runner`:
 ```bash
-./gradlew run
+./gradlew :modules:runner:run
 ```
 
-### Executando os Exemplos Individuais
-- **Virtual Threads (I/O Simulado):**
-  ```bash
-  ./gradlew runProjectLoomExample
-  ```
-- **`CompletableFuture`:**
-  ```bash
-  ./gradlew runCompletableFuture
-  ```
-- **`RxJava`:**
-  ```bash
-  ./gradlew runRxJava
-  ```
-- **`StructuredConcurrency`:**
-  ```bash
-  ./gradlew runStructuredConcurrency
-  ```
+### Executar Exemplos Individualmente
+Você pode executar cada módulo de forma independente. Isso é útil para testar ou analisar um modelo específico.
 
-- **`Kotlin coreoutins`:**
-  ```bash
-  ./gradlew runKotlinCoroutines
-  ```
+-   **Virtual Threads (Loom):**
+    ```bash
+    ./gradlew :modules:loom:run
+    ```
+-   **Structured Concurrency:**
+    ```bash
+    ./gradlew :modules:structured:run
+    ```
+-   **CompletableFuture:**
+    ```bash
+    ./gradlew :modules:completablefuture:run
+    ```
+-   **RxJava:**
+    ```bash
+    ./gradlew :modules:rxjava:run
+    ```
+-   **Kotlin Coroutines:**
+    ```bash
+    ./gradlew :modules:coroutines:run
+    ```
 
-
-### Rodar os Testes
+### Gerar um JAR Independente
+Você pode empacotar qualquer módulo em um JAR executável. Por exemplo, para empacotar o módulo `loom`:
 ```bash
-./gradlew test
+./gradlew :modules:loom:jar
 ```
-
-## Comparação de Kotlin e Java para coroutines
-
-
-| Feature                  |	Java (Loom como referencia)	| Kotlin  |
-| ------------------------ | ---------------------------- | ------- |
-| Sintaxe	                 |  Verbosa	                    | Concisa, limpa e intuitiva (bem mais agradável) |
-| Integração               | 	Biblioteca	                | Nativa  |
-| Curva de aprendizado     | 	Moderada	                  | Fácil   |
-| Performance e velocidade |  Normal                      | Equivalente Java mas a compilação foi bem lenta |
-
-
+O JAR será gerado em `modules/loom/build/libs/`.
