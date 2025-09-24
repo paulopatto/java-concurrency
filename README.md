@@ -56,7 +56,25 @@ Para rodar o benchmark comparativo, execute:
   ./gradlew runStructuredConcurrency
   ```
 
+- **`Kotlin coreoutins`:**
+  ```bash
+  ./gradlew runKotlinCoroutines
+  ```
+
+
 ### Rodar os Testes
 ```bash
 ./gradlew test
 ```
+
+## Comparação de Kotlin e Java para coroutines
+
+
+| Feature                  |	Java (Loom como referencia)	| Kotlin  |
+| ------------------------ | ---------------------------- | ------- |
+| Sintaxe	                 |  Verbosa	                    | Concisa, limpa e intuitiva (bem mais agradável) |
+| Integração               | 	Biblioteca	                | Nativa  |
+| Curva de aprendizado     | 	Moderada	                  | Fácil   |
+| Performance e velocidade |  Normal                      | Equivalente Java mas a compilação foi bem lenta |
+
+
