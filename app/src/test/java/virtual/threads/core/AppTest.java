@@ -1,4 +1,4 @@
-package virtual.threads;
+package virtual.threads.core;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
