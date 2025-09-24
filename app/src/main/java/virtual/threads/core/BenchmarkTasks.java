@@ -25,18 +25,6 @@ public class BenchmarkTasks {
 
     private static final EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
     private static final Encoding encoding = registry.getEncoding(EncodingType.CL100K_BASE);
-    private static String fileContent;
-
-    static {
-        try (InputStream stream = BenchmarkTasks.class.getClassLoader().getResourceAsStream("tecnologia-e-inovacao.md")) {
-            if (stream == null) {
-                throw new IOException("Resource file not found");
-            }
-            fileContent = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            fileContent = "Error reading file: " + e.getMessage();
-        }
-    }
 
     public static String cpuIntensiveTask() {
         return BCrypt.withDefaults().hashToString(12, PASSWORD.toCharArray());
@@ -57,7 +45,16 @@ public class BenchmarkTasks {
     }
 
     public static int diskOp() {
-        // Simula uma operação de disco/memória lendo o arquivo e tokenizando.
+        // Lê o arquivo do disco e tokeniza o conteúdo a cada chamada para ser pesado mesmo
+        String fileContent;
+        try (InputStream stream = BenchmarkTasks.class.getClassLoader().getResourceAsStream("tecnologia-e-inovacao.md")) {
+            if (stream == null) {
+                throw new IOException("Resource file not found");
+            }
+            fileContent = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            fileContent = "Error reading file: " + e.getMessage();
+        }
         return encoding.countTokens(fileContent);
     }
 }
